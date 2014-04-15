@@ -13,7 +13,12 @@ var ui = {
         }
     },
 
+    inputHistory: [],
+    historyPos: -1,
     processInput: function(text) {
+        this.historyPos = -1;
+        this.inputHistory.unshift(text);
+
         if ((m = /^(\d{2}:\d{2}) /.exec(text)) != null) {
             time = m[1];
             text = text.substring(time.length + 1);
@@ -26,18 +31,39 @@ var ui = {
         } else if ((m = /^reopen (\d+)/.exec(text)) != null) {
             api.reopen(parseInt(m[1]));
         } else {
+            this.inputHistory.x.shift();
             this.error(text, "Invalid input");
+        }
+    },
+    inputKeyHandler: function(e) {
+        switch (e.keyCode) {
+            case 38: // UP
+                e.preventDefault();
+                if (ui.historyPos < ui.inputHistory.length - 1) {
+                    $('#cmdline').val(ui.inputHistory[++ui.historyPos]);
+                }
+                break;
+            case 40: // DOWN
+                e.preventDefault();
+                if (ui.historyPos > 0) {
+                    $('#cmdline').val(ui.inputHistory[--ui.historyPos]);
+                }
+                else if (ui.historyPos == 0) {
+                    ui.historyPos--;
+                    $('#cmdline').val('');
+                }
+                break;
         }
     },
 
     toggleShow: function() {
         var btn = $('#btn-showall');
 
-        if ($(btn).hasClass('active')) {
-            $(btn).removeClass('active');
+        if (btn.hasClass('active')) {
+            btn.removeClass('active');
             $('.danger, .item-done').fadeOut();
         } else {
-            $(btn).addClass('active');
+            btn.addClass('active');
             $('.danger, .item-done').fadeIn();
         }
     },
@@ -61,10 +87,12 @@ var ui = {
 
         // I hate myself.
         for (i = 0; i < rows.length; i++) {
-            if (rows.eq(i).children().eq(1).text() > item.time) {
-                rows.eq(i).after(row);
-                return;
+            if (rows.eq(i).children().eq(1).text() < item.time) {
+                continue;
             }
+
+            rows.eq(i).before(row);
+            return;
         }
 
         $('#maintable > tbody').append(row);
@@ -85,6 +113,10 @@ var ui = {
                 row.addClass("danger");
                 break;
         }
+
+        if (status != 1 && !$('#btn-showall').hasClass('active')) {
+            row.css('display', 'none');
+        }
     },
 
     refreshTable: function(data) {
@@ -101,7 +133,13 @@ var ui = {
             if (a.time < b.time) {
                 return -1;
             } else if(a.time == b.time) {
-                return 0;
+                if (a.id < b.id) {
+                    return -1;
+                } else if (a.id == b.id) {
+                    return 0;
+                } else {
+                    return 1;
+                }
             } else {
                 return 1;
             }
@@ -183,6 +221,9 @@ $(document).ready(function() {
         ui.processInput($('#cmdline').val());
         $('#cmdline').val('');
     });
+
+    // Hook up command prompt keypress.
+    $('#cmdline').keyup(ui.inputKeyHandler);
 
     // Hook up the 'show all' button.
     $('#btn-showall').click(function(e) {

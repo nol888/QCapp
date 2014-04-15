@@ -13,8 +13,4 @@ html, body {
 
 .item-done {
     color: #aaa;
-    display: none;
-}
-.danger {
-    display: none;
 }
