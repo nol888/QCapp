@@ -1,9 +1,14 @@
+"""
+QCapp RESTful API handlers.
+"""
+
 import json
 import re
 
 from tornado.web import RequestHandler
 
-from .models import *
+from .models import QCItem, ITEM_NEW, ITEM_DONE, ITEM_REJECTED
+from .eventsource import SSEHandler
 
 _items = []
 
@@ -21,12 +26,18 @@ class AddItemHandler(RequestHandler):
             if not AddItemHandler.TIME_PATTERN.match(payload['time']):
                 raise ValueError('time is invalid')
 
-            _items.append(QCItem(status=ITEM_NEW, **payload))
+            item = QCItem(status=ITEM_NEW, **payload)
+            _items.append(item)
 
             self.write({
                 'id': len(_items) - 1 # lol this is terrible.
             })
+            self.finish()
 
+            # Now I wish this ID thing was a lot better.
+            item = item.__dict__
+            item['id'] = len(_items) - 1
+            SSEHandler.push(item, "add")
         except Exception as e:
             self.set_status(500)
             self.write({
@@ -59,10 +70,15 @@ class SetItemStatusHandler(RequestHandler):
             id = int(id)
             _items[id].status = VERB_TO_STATUS[verb]
 
-            self.write({
+            response = {
                 'id': id,
                 'status': _items[id].status
-            })
+            }
+
+            self.write(response)
+            self.finish()
+
+            SSEHandler.push(response, "change")
         except Exception as e:
             self.set_status(500)
             self.write({

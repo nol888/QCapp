@@ -6,6 +6,7 @@ from tornado.web import Application, RequestHandler
 from os import path
 
 from .service import AddItemHandler, ListItemsHandler, SetItemStatusHandler
+from .eventsource import SSEHandler
 
 logger = logging.getLogger(__name__)
 
@@ -24,11 +25,12 @@ def main():
             (r"/$", MainHandler),
             (r"/api/add$", AddItemHandler),
             (r"/api/list$", ListItemsHandler),
-            (r"/api/(reopen|done|reject)/([0-9]+)$", SetItemStatusHandler)
+            (r"/api/(reopen|done|reject)/([0-9]+)$", SetItemStatusHandler),
+            (r"/api/stream$", SSEHandler)
         ],
         template_path=path.join(path.dirname(__file__), "templates"),
         static_path=path.join(path.dirname(__file__), "static"),
-        debug=True
+        debug=True  
         )
     app.listen(options.port)
     IOLoop.instance().start()

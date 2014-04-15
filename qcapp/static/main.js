@@ -159,6 +159,19 @@ var api = {
                 ui.log("/api/" + verb + " failed with: " + jqXHR.statusText);
             }
         });
+    },
+
+    subscribe: function() {
+        ui.log("API call: endpoint=/stream");
+
+        this.stream = new EventSource("/api/stream");
+        this.stream.addEventListener("add", function(e) {
+            ui.addRow(JSON.parse(e.data));
+        });
+        this.stream.addEventListener("change", function(e) {
+            d = JSON.parse(e.data);
+            ui.updateRow(ui.findRow(d.id), d.status);
+        });
     }
 };
 
@@ -187,4 +200,7 @@ $(document).ready(function() {
 
     // Load list of QC items.
     api.list();
+
+    // Subscribe to event stream.
+    api.subscribe();
 });
