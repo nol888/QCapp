@@ -29,8 +29,7 @@ def main():
             (r"/api/stream$", SSEHandler)
         ],
         template_path=path.join(path.dirname(__file__), "templates"),
-        static_path=path.join(path.dirname(__file__), "static"),
-        debug=True  
+        static_path=path.join(path.dirname(__file__), "static")
         )
     app.listen(options.port)
     IOLoop.instance().start()
