@@ -41,7 +41,7 @@ class ListItemsHandler(RequestHandler):
     """
 
     def get(self):
-        self.write(json.dumps([x.json() for x in _items]))
+        self.write(json.dumps([x.__dict__ for x in _items]))
 
 class SetItemStatusHandler(RequestHandler):
     """
