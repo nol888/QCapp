@@ -27,7 +27,8 @@ def main():
             (r"/api/(reopen|done|reject)/([0-9]+)$", SetItemStatusHandler)
         ],
         template_path=path.join(path.dirname(__file__), "templates"),
-        static_path=path.join(path.dirname(__file__), "static")
+        static_path=path.join(path.dirname(__file__), "static"),
+        debug=True
         )
     app.listen(options.port)
     IOLoop.instance().start()

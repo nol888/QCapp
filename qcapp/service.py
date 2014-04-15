@@ -70,4 +70,4 @@ class SetItemStatusHandler(RequestHandler):
             })
 
     def post(self, verb, id):
-        return get(self, verb, id)
+        return self.get(verb, id)

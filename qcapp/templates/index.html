@@ -1,1 +1,38 @@
-<h1>QC Application</h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>QC Application</title>
+
+    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/static/main.css" />
+
+    <script type="text/javascript" src="//code.jquery.com/jquery-2.1.0.min.js"></script>
+    <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/static/main.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="page-header">
+        <h1>QC Application <small>Let's meet in the accelerated world.</small></h1>
+    </div>
+
+    <form class="form-inline" id="cmdform">
+        <input type="text" placeholder="qcapp command prompt" class="form-control" id="cmdline" />
+    </form>
+
+    <button type="button" class="btn btn-default" id="btn-showall">Show Finished and Rejected Items</button>
+
+    <table class="table" id="maintable">
+        <thead>
+            <tr>
+                <th style="min-width: 30px; width: 5%;">#</th>
+                <th style="min-width: 40px; width: 10%;">Time</th>
+                <th>Text</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
