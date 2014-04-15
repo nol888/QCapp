@@ -5,13 +5,13 @@ from tornado.options import define, options, parse_command_line
 from tornado.web import Application, RequestHandler
 from os import path
 
-from .service import *
+from .service import AddItemHandler, ListItemsHandler, SetItemStatusHandler
 
 logger = logging.getLogger(__name__)
 
-class ShitHandler(RequestHandler):
+class MainHandler(RequestHandler):
     def get(self):
-        self.write("<h1>It works!</h1>")
+        self.render("index.html")
 
 def main():
     define("port", default=8888, help="run webserver on the given port", type=int)
@@ -21,7 +21,7 @@ def main():
 
     app = Application(
         [
-            (r"/$", ShitHandler),
+            (r"/$", MainHandler),
             (r"/api/add$", AddItemHandler),
             (r"/api/list$", ListItemsHandler),
             (r"/api/(reopen|done|reject)/([0-9]+)$", SetItemStatusHandler)
