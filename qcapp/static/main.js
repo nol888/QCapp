@@ -31,7 +31,7 @@ var ui = {
         } else if ((m = /^reopen (\d+)/.exec(text)) != null) {
             api.reopen(parseInt(m[1]));
         } else {
-            this.inputHistory.x.shift();
+            this.inputHistory.shift();
             this.error(text, "Invalid input");
         }
     },
