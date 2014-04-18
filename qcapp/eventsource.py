@@ -46,8 +46,8 @@ class SSEHandler(RequestHandler):
 
         SSEHandler.__subscribers.append(self)
         logger.info("200 STREAM ({}) ({} subscribers)".format(
-        	self.request.connection.address[0],
-        	len(SSEHandler.__subscribers)
+            self.request.connection.address[0],
+            len(SSEHandler.__subscribers)
         ))
 
     def on_connection_close(self):
