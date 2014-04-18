@@ -73,6 +73,7 @@ var ui = {
         row.append($('<td></td>').text(item.id));
         row.append($('<td></td>').text(item.time));
         row.append($('<td></td>').text(item.text));
+        row.append($('<td></td>').text(item.author));
 
         this.updateRow(row, item.status);
 
@@ -149,6 +150,12 @@ var ui = {
         for (i in data) {
             this.appendRow(data[i]);
         }
+    },
+
+    promptName: function() {
+        var name;
+        while ((name = prompt('Please enter a username.')) == null);
+        localStorage['author'] = name;
     }
 };
 
@@ -158,7 +165,8 @@ var api = {
 
         $.post("/api/add", JSON.stringify({
             'time': time,
-            'text': text
+            'text': text,
+            'author': localStorage['author']
         })).fail(function(jqXHR) {
             if (jqXHR.status == 500) {
                 e = JSON.parse(jqXHR.responseText);
@@ -225,11 +233,15 @@ $(document).ready(function() {
     // Hook up command prompt keypress.
     $('#cmdline').keyup(ui.inputKeyHandler);
 
-    // Hook up the 'show all' button.
+    // Button event handlers.
     $('#btn-showall').click(function(e) {
         e.preventDefault();
         ui.toggleShow();
-    })
+    });
+    $('#btn-changename').click(function(e) {
+        e.preventDefault();
+        ui.promptName();
+    });
 
     // Make escape clear errors.
     $(document).keyup(function(e) {
@@ -238,6 +250,11 @@ $(document).ready(function() {
 
     // Focus command prompt.
     $('#cmdline').focus();
+
+    // Check for author name.
+    if (!localStorage['author']) {
+        ui.promptName();
+    }
 
     // Load list of QC items.
     api.list();
