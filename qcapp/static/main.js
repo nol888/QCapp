@@ -154,8 +154,9 @@ var ui = {
 
     promptName: function() {
         var name;
-        while ((name = prompt('Please enter a username.')) == null);
-        localStorage['author'] = name;
+        while (((name = prompt('Please enter a username.', localStorage['author'])) == null)
+            && (localStorage['author'] == null));
+        localStorage['author'] = name || localStorage['author'];
     }
 };
 

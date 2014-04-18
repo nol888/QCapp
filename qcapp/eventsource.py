@@ -44,9 +44,11 @@ class SSEHandler(RequestHandler):
         self.write(headers)
         self.flush()
 
-        logger.info("200 STREAM ({})".format(self.request.connection.address[0]))
-
         SSEHandler.__subscribers.append(self)
+        logger.info("200 STREAM ({}) ({} subscribers)".format(
+        	self.request.connection.address[0],
+        	len(SSEHandler.__subscribers)
+        ))
 
     def on_connection_close(self):
         """Remove this client from the list of subscribers."""
