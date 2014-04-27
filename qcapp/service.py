@@ -87,3 +87,15 @@ class SetItemStatusHandler(RequestHandler):
 
     def post(self, verb, id):
         return self.get(verb, id)
+
+class TimeSearchHandler(RequestHandler):
+    """
+    Search for items within a delta of 5 seconds from the given time.
+    """
+
+    def get(self, time):
+        def time_delta(t1, t2):
+            m1, s1 = [int(x) for x in t1.split(':')]
+            m2, s2 = [int(x) for x in t2.split(':')]
+            return abs(m1 - m2) * 60 + abs(s1 - s2)
+        self.write({'items': [x.__dict__ for x in _items if time_delta(x.time, time) <= 5]})
